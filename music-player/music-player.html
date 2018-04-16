@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Music-player</title>
+    <link rel="stylesheet" href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .clearfix::after {
+            content: '';
+            clear: both;
+            display: block;
+        }
+
+        .cover {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background: url('/music/2.jpg') center center no-repeat;
+            background-size: cover;
+        }
+
+        .music-box {
+            width: 400px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 3px 4px 5px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        .music-status {
+            background: #DAE2F8;
+            /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #D6A4A4, #DAE2F8);
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #D6A4A4, #DAE2F8);
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            padding: 10px;
+            opacity: 0.8;
+        }
+
+        .music-status .info {
+            text-align: center;
+
+        }
+
+        .music-status .info span {
+            display: inline-block;
+            width: 400px;
+        }
+
+        .music-status .info .song-name {
+            font-size: 16px;
+
+        }
+
+        .music-status .info .singer {
+            font-size: 12px;
+
+        }
+
+        .music-status .progress .time {
+            float: right;
+            margin-top: 20px;
+            margin-right: 40px;
+        }
+
+        progress {
+            width: 300px;
+
+        }
+
+        .play-list {
+            opacity: 0.9;
+            margin-top: 20px;
+        }
+
+        .play-list li {
+            list-style-type: none;
+            line-height: 30px;
+            height: 30px;
+        }
+
+        .play-list .choosed {
+            background-color: #DAE2F8;
+            opacity: 0.7;
+        }
+
+        .jump {
+            /* display: inline-block; */
+            float: right;
+            height: 30px;
+            line-height: 30px;
+
+            margin-left: 250px;
+        }
+
+        .jump span {
+            display: inline-block;
+            width: 3px;
+            margin-bottom: 0;
+            background: #ED4264;
+            /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #FFEDBC, #ED4264);
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #FFEDBC, #ED4264);
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            margin-right: -12px;
+        }
+
+        .jump .line1 {
+            /* alternate意为应该轮流反向播放动画 */
+            animation: line 0.6s infinite ease-in-out alternate;
+        }
+
+        .jump .line2 {
+            animation: line 0.6s 0.2s infinite ease-in-out alternate;
+        }
+
+        .jump .line3 {
+            animation: line 0.6s 0.4s infinite ease-in-out alternate;
+        }
+
+        .jump .line4 {
+            animation: line 0.6s 0.6s infinite ease-in-out alternate;
+        }
+
+        @keyframes line {
+            from {
+                height: 0;
+            }
+            to {
+                height: 20px;
+            }
+        }
+
+        @-webkit-keyframes line {
+            from {
+                height: 0;
+            }
+            to {
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cover">
+        <div class="music-box">
+            <div class="music-status">
+                <div class="info">
+                    <span class="song-name">替换</span>
+                    <span class="singer">替换</span>
+                </div>
+                <div class="status">
+                    <span class="previous">
+                        <i class="fa fa-backward" aria-hidden="true"></i>
+                    </span>
+                    <span class="play">
+                        <i class="fa fa-play" aria-hidden="true"></i>
+                    </span>
+                    <span class="next">
+                        <i class="fa fa-forward" aria-hidden="true"></i>
+                    </span>
+                </div>
+
+                <div class="progress clearfix">
+                    <progress value='70' max='100'></progress>
+                    <div class="time">00.00</div>
+
+                </div>
+            </div>
+            <ul class="play-list">
+            </ul>
+        </div>
+    </div>
+
+</body>
+<script id="jump-tmpl" type="text/html">
+    <div class="jump">
+        <span class="line1"></span>
+        <span class="line2"></span>
+        <span class="line3"></span>
+        <span class="line4"></span>
+    </div>
+</script>
+<script>
+    var musicList = [];
+    var currentMusic = 0;
+    var audioObject = new Audio();
+    //
+    function $(selector) {
+        return document.querySelector(selector);
+    }
+
+    function $$(selector) {
+        return document.querySelectorAll(selector);
+    }
+
+    getMusicList(function (list) {
+        musicList = list;
+        generateList(musicList);
+        loadMusic(currentMusic, false)
+    })
+    audioObject.ontimeupdate = function () {
+        //设置进度条
+        $('.progress progress').value = this.currentTime;
+        if (this.duration) {
+            $('.progress progress').max = this.duration;
+        }
+    }
+    //改进--设置时间
+    audioObject.onplay = function () {
+        clock = setInterval(function () {
+            var min = Math.floor(audioObject.currentTime / 60);
+            var sec = Math.floor(audioObject.currentTime) % 60 + '';
+            sec = sec.length === 2 ? sec : '0' + sec;
+            $('.progress .time').innerText = min + ':' + sec;
+        }, 1000);
+    }
+    audioObject.onpause = function () {
+        clearInterval(clock);
+    }
+    //当一首歌播放完后，自动播放下一首
+    audioObject.onended = function () {
+        currentMusic = (++currentMusic) % musicList.length;
+        loadMusic(currentMusic, true);
+    }
+    //暂停or播放
+    $('.status .play').onclick = function () {
+        loadMusic(currentMusic, audioObject.paused, 'paused')
+    }
+    //下一曲
+    $('.status .next').onclick = function () {
+        currentMusic = (++currentMusic) % musicList.length;
+        loadMusic(currentMusic, true);
+    }
+    //上一曲
+    $('.status .previous').onclick = function () {
+        currentMusic = (musicList.length + (--currentMusic)) % musicList.length;
+        loadMusic(currentMusic, true);
+    }
+    //实现拖动音乐播放位置
+    $('.progress progress').onclick = function (e) {
+        var percent = e.offsetX / parseInt(getComputedStyle(this).width);
+        //$('.progress progress').value = percent * audioObject.duration;
+        audioObject.currentTime = percent * audioObject.duration;
+    }
+
+
+
+    function getMusicList(callback) {
+        var xhr = new XMLHttpRequest()
+        xhr.open('GET', 'music.json', true)
+        xhr.onload = function () {
+            if (xhr.status == '200' && xhr.status < '300' || xhr.status == '304') {
+                callback(JSON.parse(this.responseText));
+            } else {
+                console.log('获取数据失败')
+            }
+        }
+        xhr.onerror = function () {
+            console.log('网络异常')
+        }
+        xhr.send();
+    }
+    //设置播放曲目、歌手及歌曲名
+    function loadMusic(currentMusic, isPlay, isPause) {
+        if (isPause != 'paused') {
+            var musicObj = musicList[currentMusic]
+            audioObject.src = musicObj.src;
+            $('.music-box .song-name').innerText = musicObj.song;
+            $('.music-box .singer').innerText = musicObj.singer;
+            $('.cover').style.backgroundImage = 'url(' + musicObj.img + ')';
+        }
+
+        if ($('.jump')) {
+            $('.jump').parentNode.removeChild($('.jump'))
+        }
+        for (i = 0; i < $$('li').length; i++) {
+            if ($$('li')[i].classList.contains('choosed')) {
+                $$('li')[i].classList.remove('choosed');
+            }
+        }
+        if ($$('li')[currentMusic].classList.contains('choosed')) {
+            $$('li')[currentMusic].classList.remove('choosed');
+        }
+        if (isPlay) {
+            audioObject.play();
+            $('.status .play').querySelector('.fa').classList.remove('fa-play');
+            $('.status .play').querySelector('.fa').classList.add('fa-pause');
+
+            var jumlTmpl = $('#jump-tmpl').innerText;
+            var divTemp = document.createElement("div");
+            divTemp.innerHTML = jumlTmpl;
+            $$('li')[currentMusic].appendChild(divTemp.children[0]);
+            $$('li')[currentMusic].classList.add('choosed');
+        } else {
+            audioObject.pause();
+            $('.status .play').querySelector('.fa').classList.remove('fa-pause');
+            $('.status .play').querySelector('.fa').classList.add('fa-play');
+        }
+    }
+    //音乐列表
+    function generateList(list) {
+        var list_str = '';
+        for (var i = 0; i < list.length; i++) {
+            list_str += '<li index=' + i + '>' + list[i].song + '-' + list[i].singer + '</li>';
+        }
+        $('.music-box .play-list').innerHTML = list_str;
+        // 点击列表中的歌曲，使其播放
+        $('.music-box .play-list').addEventListener('click', function (e) {
+            if (e.target.tagName == 'LI') {
+                currentMusic = e.target.getAttribute('index') - 0;
+                loadMusic(currentMusic, true);
+            }
+        })
+    }
+</script>
+
+</html>
