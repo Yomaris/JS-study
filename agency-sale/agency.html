@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agency</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .cover{
+            background: rgba(0,0,0, 0.3);
+            transition: all 0.3s;
+        }
+        .delete-hidden{
+            position:absolute;
+            left: 168px;
+            top: 150px;
+            visibility: hidden;
+        }
+        .delete-show{
+            position:absolute;
+            left: 168px;
+            top: 150px;
+            visibility: visible
+        }
+    </style>
+</head>
+</head>
+
+<body>
+    <div class="page-header">
+        <h1>Picsum.photos
+            <small>ON SALE</small>
+        </h1>
+    </div>
+    <div class="container">
+        <div class="row hello">
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <img src="https://picsum.photos/200/200/?image=10" alt="...">
+                    <a href="#" class="btn btn-default delete-hidden" role="button">删除</a>
+                    <div class="caption">
+                        <h5>图1</h5>
+                        <p>$10</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <img src="https://picsum.photos/200/200/?image=20" alt="...">
+                    <a href="#" class="btn btn-default delete-hidden" role="button">删除</a>
+                    <div class="caption">
+                        <h5>图2</h5>
+                        <p>$20</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <img src="https://picsum.photos/200/200/?image=30" alt="...">
+                    <a href="#" class="btn btn-default delete-hidden" role="button">删除</a>
+                    <div class="caption">
+                        <h5>图3</h5>
+                        <p>$30</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p>
+            <a href="#" class="btn btn-primary" role="button">增加</a>
+            <a href="#" class="btn btn-info" role="button">编辑</a>
+        </p>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/2.2.2/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        function page(pro){
+            var html = ''
+            html += '<div class="col-sm-6 col-md-4">'
+            html += '<div class="thumbnail">'
+            html += '<img src="'+pro.picUrl+'" alt="...">'
+            html += '<a href="#" class="btn btn-default delete-hidden" role="button">删除</a>'
+            html += '<div class="caption">'
+            html += '<h5>'+pro.picName+'</h5>'
+            html += '<p>'+pro.price+'</p></div></div></div>'
+            return html
+        }
+        function getData(){
+            var datArray = []
+            for(var i = 0;i < 3;i++){
+                var rand = Math.floor(Math.random()*100)
+                var info = {
+                    picUrl:'https://picsum.photos/200/200/?image=' + rand,
+                    picName:'picture'+rand,
+                    price:'$'+rand
+                }
+                datArray.push(info)
+            }
+            return datArray
+        }
+        $('.btn-primary').on('click',function(e){
+            e.preventDefault();
+            var useData = getData()
+            $.each(useData,function(index,pro){
+                var html = page(pro)
+                $('.row').append(html)
+            })
+            if($('.thumbnail').hasClass('cover')){
+                $('.thumbnail').removeClass('cover')
+                $('.btn-default').removeClass('delete-show')
+            }
+
+            
+        });
+        $('.container').on('click','.btn-info',function(e){
+            e.preventDefault();
+            $('.delete-hidden').toggleClass('delete-show')
+            if($('.thumbnail').hasClass('cover')){
+                $('.thumbnail').removeClass('cover')
+                }else{
+                    $('.thumbnail').addClass('cover')
+                }
+            
+            if($('.btn-default').hasClass('delete-show')){
+                $('.btn-default').on('click',function(){
+                    $(this).parent().parent().remove()
+                })
+            }
+        })
+    </script>
+</body>
+
+</html>
