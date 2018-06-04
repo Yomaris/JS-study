@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tab</title>
+    <style>
+        .tab-switcher .tab::after {
+            content: '';
+            display: block;
+            clear: both;
+
+        }
+
+        .tab-switcher .tab .btn {
+            float: left;
+            border-left: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .tab-switcher .tab .active {
+            background: #ccc;
+            display: block;
+        }
+
+        .tab-switcher .tab .btn:last-child {
+            border-right: 1px solid #ccc;
+        }
+
+        .tab-switcher .content .panel {
+            width: 300px;
+            height: 200px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            display: none
+        }
+
+        .tab-switcher .content .active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tab-switcher">
+        <div class="tab">
+            <div class="btn active">1</div>
+            <div class="btn">2</div>
+            <div class="btn">3</div>
+            <div class="btn">4</div>
+        </div>
+        <div class="content">
+            <div class="panel active">panel1</div>
+            <div class="panel">panel2</div>
+            <div class="panel">panel3</div>
+            <div class="panel">panel4</div>
+        </div>
+    </div>
+    <div class="tab-switcher">
+        <div class="tab">
+            <div class="btn active">1</div>
+            <div class="btn">2</div>
+            <div class="btn">3</div>
+            <div class="btn">4</div>
+        </div>
+        <div class="content">
+            <div class="panel active">panel1</div>
+            <div class="panel">panel2</div>
+            <div class="panel">panel3</div>
+            <div class="panel">panel4</div>
+        </div>
+    </div>>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $('.tab .btn').on('click', function () {
+            $(this).addClass('active')
+                .siblings()
+                .removeClass('active')
+            $(this).parents('.tab-switcher')
+                .find('.panel')
+                .eq($(this).index())
+                .addClass('active')
+                .siblings()
+                .removeClass('active')
+        })
+    </script>
+</body>
+
+
+</html>
