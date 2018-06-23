@@ -20,9 +20,10 @@
             margin-right: 20px;
             font-size: 20px;
         }
-        main{
-            background: linear-gradient(to top, #d5dee7 0%,rgba(255, 175, 189,0.8) 0%, rgba(201, 255, 191,0.45) 100%), url(flo.jpg) center center no-repeat;
-            background-size:cover;
+
+        main {
+            background: linear-gradient(to top, #d5dee7 0%, rgba(255, 175, 189, 0.8) 0%, rgba(201, 255, 191, 0.45) 100%), url(flo.jpg) center center no-repeat;
+            background-size: cover;
         }
 
         .flip-modal {
@@ -174,73 +175,74 @@
             </div>
         </div>
     </main>
-</body>
-<script>
-    function $(selector) {
-        return document.querySelector(selector);
-    }
-
-    function $$(selector) {
-        return document.querySelectorAll(selector);
-    }
-    $('header .login').onclick = function(e){
-      e.stopPropagation()
-      $('.flip-modal').style.display = 'block';
-    }
-
-    $('.flip-modal').addEventListener('click', function (e) {
-        e.stopPropagation()
-        if (e.target.classList.contains('login')) {
-            $('.flip-modal').classList.remove('register')
-            $('.flip-modal').classList.add('login')
+    <script>
+        function $(selector) {
+            return document.querySelector(selector);
         }
-        if (e.target.classList.contains('register')) {
-            $('.flip-modal').classList.add('register')
-            $('.flip-modal').classList.remove('login')
+
+        function $$(selector) {
+            return document.querySelectorAll(selector);
         }
-        if (e.target.classList.contains('fa-close')) {
+        $('header .login').onclick = function (e) {
+            e.stopPropagation()
+            $('.flip-modal').style.display = 'block';
+        }
+
+        $('.flip-modal').addEventListener('click', function (e) {
+            e.stopPropagation()
+            if (e.target.classList.contains('login')) {
+                $('.flip-modal').classList.remove('register')
+                $('.flip-modal').classList.add('login')
+            }
+            if (e.target.classList.contains('register')) {
+                $('.flip-modal').classList.add('register')
+                $('.flip-modal').classList.remove('login')
+            }
+            if (e.target.classList.contains('fa-close')) {
+                $('.flip-modal').style.display = 'none';
+            }
+        })
+        document.addEventListener('click', function (e) {
             $('.flip-modal').style.display = 'none';
-        }
-    })
-    document.addEventListener('click', function (e) {
-        $('.flip-modal').style.display = 'none';
-    },)
+        }, )
 
-    $('.modal-login form').addEventListener('submit', function (e) {
-        e.preventDefault()
-        if (!/^\w{3,8}$/.test($('.modal-login input[name=username]').value)) {
-            $('.modal-login .errormsg').innerText = '用户名需输入3-8个字符，包括字母数字下划线'
-            return false
-        }
-        if (!/^\w{6,10}$/.test($('.modal-login input[name=password]').value)) {
-            $('.modal-login .errormsg').innerText = '密码需输入6-10个字符，包括字母数字下划线'
-            return false
-        }
-        this.submit()
-    })
+        $('.modal-login form').addEventListener('submit', function (e) {
+            e.preventDefault()
+            if (!/^\w{3,8}$/.test($('.modal-login input[name=username]').value)) {
+                $('.modal-login .errormsg').innerText = '用户名需输入3-8个字符，包括字母数字下划线'
+                return false
+            }
+            if (!/^\w{6,10}$/.test($('.modal-login input[name=password]').value)) {
+                $('.modal-login .errormsg').innerText = '密码需输入6-10个字符，包括字母数字下划线'
+                return false
+            }
+            this.submit()
+        })
 
 
-    $('.modal-register form').addEventListener('submit', function (e) {
-        e.preventDefault()
-        if (!/^\w{3,8}$/.test($('.modal-register input[name=username]').value)) {
-            $('.modal-register .error').innerText = '用户名需输入3-8个字符，包括字母数字下划线';
-            return false
-        }
-        if (/^cq$/.test($('.modal-register input[name=username]').value)) {
-            $('.modal-register .error').innerText = '用户名已存在';
-            return false
-        }
-        if (!/^\w{6,10}$/.test($('.modal-register input[name=password]').value)) {
-            $('.modal-register .error').innerText = '密码需输入6-10个字符，包括字母数字下划线';
-            return false
-        }
-        if ($('.modal-register input[name=password]').value !== $(
-                '.modal-register input[name=repassword]').value) {
-            $('.modal-register .error').innerText = '两次输入的密码不一致';
-            return false
-        }
-        this.submit()
-    })
-</script>
+        $('.modal-register form').addEventListener('submit', function (e) {
+            e.preventDefault()
+            if (!/^\w{3,8}$/.test($('.modal-register input[name=username]').value)) {
+                $('.modal-register .error').innerText = '用户名需输入3-8个字符，包括字母数字下划线';
+                return false
+            }
+            if (/^cq$/.test($('.modal-register input[name=username]').value)) {
+                $('.modal-register .error').innerText = '用户名已存在';
+                return false
+            }
+            if (!/^\w{6,10}$/.test($('.modal-register input[name=password]').value)) {
+                $('.modal-register .error').innerText = '密码需输入6-10个字符，包括字母数字下划线';
+                return false
+            }
+            if ($('.modal-register input[name=password]').value !== $(
+                    '.modal-register input[name=repassword]').value) {
+                $('.modal-register .error').innerText = '两次输入的密码不一致';
+                return false
+            }
+            this.submit()
+        })
+    </script>
+</body>
+
 
 </html>
